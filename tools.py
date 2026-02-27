@@ -4,10 +4,41 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from crewai.tools import tool
-from crewai_tools import SerperDevTool
+import requests
 
-## Creating search tool
-search_tool = SerperDevTool()
+## Creating search tool using Serper API
+@tool("Search the Internet")
+def search_tool(search_query: str) -> str:
+    """Search the internet for financial news, market data, and industry information.
+    Use this to find current market context, competitor analysis, and industry benchmarks.
+    
+    Args:
+        search_query (str): The search query string.
+    
+    Returns:
+        str: Search results with titles, snippets, and links.
+    """
+    api_key = os.getenv("SERPER_API_KEY")
+    if not api_key:
+        return "Search unavailable: SERPER_API_KEY not configured."
+    
+    try:
+        response = requests.post(
+            "https://google.serper.dev/search",
+            headers={"X-API-KEY": api_key, "Content-Type": "application/json"},
+            json={"q": search_query, "num": 5},
+            timeout=10
+        )
+        response.raise_for_status()
+        data = response.json()
+        
+        results = []
+        for item in data.get("organic", [])[:5]:
+            results.append(f"- {item.get('title', '')}: {item.get('snippet', '')} ({item.get('link', '')})")
+        
+        return "\n".join(results) if results else "No results found."
+    except Exception as e:
+        return f"Search error: {str(e)}"
 
 ## Creating custom pdf reader tool
 @tool("Financial Document Reader")
@@ -32,6 +63,11 @@ def read_data_tool(file_path: str = 'data/TSLA-Q2-2025-Update.pdf') -> str:
             while "\n\n" in content:
                 content = content.replace("\n\n", "\n")
             full_report += content + "\n"
+
+    # Truncate to stay within LLM token limits (keep most important pages)
+    MAX_CHARS = 8000  # ~2000 tokens, safe for all free-tier LLMs
+    if len(full_report) > MAX_CHARS:
+        full_report = full_report[:MAX_CHARS] + "\n\n[... Document truncated for token limit. Key financial data shown above ...]"
 
     return full_report
 

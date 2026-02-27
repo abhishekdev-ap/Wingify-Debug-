@@ -8,7 +8,7 @@ from tools import search_tool, read_data_tool, analyze_investment_tool, create_r
 
 ### Loading LLM
 llm = LLM(
-    model="gemini/gemini-2.0-flash",
+    model="gemini/gemini-2.5-flash",
     api_key=os.getenv("GEMINI_API_KEY"),
 )
 
