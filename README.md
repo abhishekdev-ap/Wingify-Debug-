@@ -50,7 +50,7 @@ AI-powered financial document analysis system built with **CrewAI** and **FastAP
 | # | Bug | Fix |
 |---|-----|-----|
 | 1 | `from crewai.agents import Agent` — incorrect import path | Changed to `from crewai import Agent, LLM` |
-| 2 | `llm = llm` — self-referencing variable causes `NameError` | Initialized properly: `LLM(model="gemini/gemini-2.0-flash")` |
+| 2 | `llm = llm` — self-referencing variable causes `NameError` | Initialized properly: `LLM(model="gemini/gemini-2.5-flash")` |
 | 3 | `tool=[...]` — typo, Agent expects `tools` (plural) | Fixed to `tools=[...]` |
 | 4 | `max_iter=1` — agent can only attempt once, too restrictive | Increased to `max_iter=5` |
 | 5 | `max_rpm=1` — 1 request/minute makes the system extremely slow | Increased to `max_rpm=10` |
@@ -105,7 +105,7 @@ AI-powered financial document analysis system built with **CrewAI** and **FastAP
 
 ### Prerequisites
 - Python 3.10+
-- A [Google Gemini API Key](https://aistudio.google.com/apikey) (free tier available)
+- A [Google Gemini API Key](https://aistudio.google.com/apikey) (requires Google Cloud billing — free $300 trial available)
 - (Optional) [Serper API Key](https://serper.dev) for web search capability
 - (Optional) [Redis](https://redis.io) for async queue processing
 
@@ -113,7 +113,7 @@ AI-powered financial document analysis system built with **CrewAI** and **FastAP
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/abhishekdev-ap/Wingify-Debug-.git
 cd financial-document-analyzer-debug
 
 # Create virtual environment
