@@ -2,6 +2,19 @@
 
 AI-powered financial document analysis system built with **CrewAI** and **FastAPI**. Upload financial PDFs and get comprehensive AI-driven analysis including investment recommendations and risk assessments.
 
+## 🛠️ Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| **LLM** | Google Gemini 2.5 Flash (via CrewAI + LiteLLM) |
+| **AI Framework** | CrewAI (Multi-Agent Orchestration) |
+| **Web Framework** | FastAPI + Uvicorn |
+| **PDF Processing** | PyPDF |
+| **Web Search** | Serper.dev API |
+| **Database** | SQLAlchemy + SQLite |
+| **Queue Worker** | Celery + Redis |
+| **Language** | Python 3.10+ |
+
 ## 🏗️ Architecture
 
 ```
@@ -77,9 +90,10 @@ AI-powered financial document analysis system built with **CrewAI** and **FastAP
 | 1 | Missing `python-dotenv` (used by `load_dotenv()`) | Added |
 | 2 | Missing PDF library (`pypdf`) | Added |
 | 3 | Missing `uvicorn` (needed to run FastAPI) | Added |
-| 4 | `pydantic==1.10.13` conflicts with CrewAI (needs v2) | Removed conflicting pin |
-| 5 | `pip==24.0` shouldn't be in requirements | Removed |
-| 6 | README says `requirement.txt` (singular) | Fixed filename in README |
+| 4 | Missing `requests` (needed for custom Serper search tool) | Added |
+| 5 | `pydantic==1.10.13` conflicts with CrewAI (needs v2) | Removed conflicting pin |
+| 6 | `pip==24.0` shouldn't be in requirements | Removed |
+| 7 | README says `requirement.txt` (singular) | Fixed filename in README |
 
 ---
 
@@ -288,3 +302,19 @@ financial-document-analyzer-debug/
 | `SERPER_API_KEY` | ❌ Optional | Serper.dev API key for web search |
 | `REDIS_URL` | ❌ Optional | Redis URL for Celery (default: `redis://localhost:6379/0`) |
 | `DATABASE_URL` | ❌ Optional | Database URL (default: `sqlite:///./financial_analyzer.db`) |
+
+---
+
+## 📊 Sample Output
+
+When analyzing the Tesla Q2 2025 PDF, the system produces:
+
+```json
+{
+  "status": "success",
+  "task_id": "0e0c8cfa-36d7-4384-aed3-6bf02f7eb525",
+  "query": "What are Tesla's key financial metrics?",
+  "analysis": "**Comprehensive Risk Assessment Report for Tesla (Q2 2025)**\n\nOverall Risk Rating: Medium-High\n\n- Total Automotive Revenue: $16,661M (-16% YoY)\n- Total GAAP Gross Margin: 17.2% (-71 bp YoY)\n- Operating Margin: 4.1% (-219 bp YoY)\n- Diluted EPS: $0.33 (-18% YoY)\n- Free Cash Flow: $146M (-89% YoY)\n- Cash & Investments: $36,782M (+20% YoY)\n\nIncludes risk severity matrix, investment recommendations,\nand industry benchmark comparisons...",
+  "file_processed": "TSLA-Q2-2025-Update.pdf"
+}
+```
